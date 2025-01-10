@@ -1,0 +1,36 @@
+@echo off
+setlocal enabledelayedexpansion
+
+:: TC Kimlik Numarası üretimi
+set "tc="
+for /L %%i in (1,1,9) do (
+    set /a rand=!random! %% 10
+    set "tc=!tc!!rand!"
+)
+
+:: 10. basamak hesaplama
+set /a odd=0, even=0
+for /L %%i in (1,2,9) do (
+    set /a digit=!tc:~%%i-1,1!
+    set /a odd+=digit
+)
+for /L %%i in (2,2,8) do (
+    set /a digit=!tc:~%%i-1,1!
+    set /a even+=digit
+)
+set /a t10=(((odd * 7) - even) %% 10)
+
+:: 11. basamak hesaplama
+set /a total=0
+for /L %%i in (1,1,9) do (
+    set /a digit=!tc:~%%i-1,1!
+    set /a total+=digit
+)
+set /a total+=t10
+set /a t11=total %% 10
+
+:: Sonuç
+set "tc=!tc!!t10!!t11!"
+echo Üretilen TC Kimlik Numarası: !tc!
+
+pause
