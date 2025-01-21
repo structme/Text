@@ -1,32 +1,20 @@
-DECLARE
-    CURSOR cur IS
-        SELECT ROWID AS row_id
-        FROM your_table
-        WHERE condition; -- Güncellemek istediğiniz kayıtları filtreleyin
-
-    TYPE rowid_table IS TABLE OF ROWID INDEX BY PLS_INTEGER;
-    row_ids rowid_table;
-
-    l_batch_size CONSTANT PLS_INTEGER := 100000;
-    l_counter PLS_INTEGER := 0;
-BEGIN
-    OPEN cur;
-    LOOP
-        FETCH cur BULK COLLECT INTO row_ids LIMIT l_batch_size;
-
-        -- Kayıt yoksa döngüyü sonlandır
-        EXIT WHEN row_ids.COUNT = 0;
-
-        FORALL i IN row_ids.FIRST .. row_ids.LAST
-            UPDATE your_table
-            SET column_name = new_value
-            WHERE ROWID = row_ids(i);
-
-        l_counter := l_counter + row_ids.COUNT;
-        COMMIT; -- Her 100,000 kayıt için işlemi tamamla
-        DBMS_OUTPUT.PUT_LINE('Commit completed for rows: ' || l_counter);
-    END LOOP;
-
-    CLOSE cur;
-END;
-/
+WITH cte AS (
+    SELECT 
+        log_id,
+        kayıtdurum,
+        logtarih,
+        LEAD(kayıtdurum) OVER (PARTITION BY log_id ORDER BY logtarih) AS sonraki_kayıtdurum,
+        LEAD(logtarih) OVER (PARTITION BY log_id ORDER BY logtarih) AS sonraki_logtarih
+    FROM 
+        log_tablosu
+)
+SELECT 
+    log_id,
+    kayıtdurum,
+    sonraki_kayıtdurum,
+    TIMESTAMPDIFF(SECOND, logtarih, sonraki_logtarih) AS sure_saniye
+FROM 
+    cte
+WHERE 
+    kayıtdurum = 4
+    AND sonraki_kayıtdurum NOT IN (1, 2, 3, 4);
