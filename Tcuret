@@ -4,21 +4,14 @@ INFILE *
 APPEND
 INTO TABLE abc.test
 FIELDS TERMINATED BY ";" TRAILING NULLCOLS
-(A "REPLACE(:A, '\"', '')",  -- A sütunundaki tırnakları kaldır
+(A "REPLACE(:A, '\"', '')",
  B,
  C,
  D,
  E,
- F "LTRIM(TO_CHAR(TO_NUMBER(REPLACE(REPLACE(:F, '\"', ''), '.', ''), 
-    '9999999G999D99', 'NLS_NUMERIC_CHARACTERS=''.,''') * 
-    TO_NUMBER('1,05', '9999D99', 'NLS_NUMERIC_CHARACTERS=''.,'''), 
-    '999G999G990D99', 'NLS_NUMERIC_CHARACTERS=''.,'''))"
+ F "TO_NUMBER(REPLACE(REPLACE(:F, '\"', ''), '.', ''), '999G999D99', 'NLS_NUMERIC_CHARACTERS='',.''') * 1.05"
 )
 SKIP 3
 BEGINDATA
 header1;header2;header3;header4;header5;header6
-header7;header8;header9;header10;header11;header12
-header13;header14;header15;header16;header17;header18
-"1.901,22";val2;val3;val4;val5;"100"
-"902,30";val7;val8;val9;val10;"200"
-"542.130,10";valA;valB;valC;valD;"300"
+header7;header8;header9;header10;header11
