@@ -1,17 +1,1 @@
-LOAD DATA
-CHARACTERSET WE8ISO8859P9
-INFILE *
-APPEND
-INTO TABLE abc.test
-FIELDS TERMINATED BY ";" TRAILING NULLCOLS
-(A "REPLACE(:A, '\"', '')",
- B,
- C,
- D,
- E,
- F "TO_NUMBER(REPLACE(REPLACE(:F, '\"', ''), '.', ''), '999G999D99', 'NLS_NUMERIC_CHARACTERS='',.''') * 1.05"
-)
-SKIP 3
-BEGINDATA
-header1;header2;header3;header4;header5;header6
-header7;header8;header9;header10;header11
+F "TO_CHAR(TO_NUMBER(REPLACE(REPLACE(:F, '\"', ''), '.', ''), '999G999D99', 'NLS_NUMERIC_CHARACTERS='',.''') * 1.05, '999G999D99', 'NLS_NUMERIC_CHARACTERS='',.''')"
