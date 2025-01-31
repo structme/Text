@@ -10,10 +10,12 @@ FIELDS TERMINATED BY ',' OPTIONALLY ENCLOSED BY '"' TRAILING NULLCOLS
  D,
  E,
  F "LTRIM(TO_CHAR(TO_NUMBER(
-        CASE 
-            WHEN INSTR(:F, '.') > 0 THEN REPLACE(REPLACE(:F, '.', ''), ',', '.') 
-            ELSE REPLACE(:F, ',', '.') 
-        END, 
+        TRIM(
+            CASE 
+                WHEN INSTR(:F, '.') > 0 THEN REPLACE(REPLACE(:F, '.', ''), ',', '.') 
+                ELSE REPLACE(:F, ',', '.') 
+            END
+        ), 
     '999999999D999', 'NLS_NUMERIC_CHARACTERS='',.''') * 1.05, 
     '999G999D999', 'NLS_NUMERIC_CHARACTERS='',.'''))"
 )
