@@ -12,8 +12,10 @@ FIELDS TERMINATED BY ',' OPTIONALLY ENCLOSED BY '"' TRAILING NULLCOLS
  F "LTRIM(TO_CHAR(
         TO_NUMBER(
             CASE 
-                WHEN LENGTH(:F) - LENGTH(REPLACE(:F, '.', '')) >= 2 THEN 
-                    REPLACE(:F, '.', '')
+                WHEN INSTR(:F, '.') > 0 AND INSTR(:F, ',', '') > 0 THEN 
+                    REPLACE(REPLACE(:F, '.', ''), ',', '.')
+                WHEN INSTR(:F, ',') > 0 THEN 
+                    REPLACE(:F, ',', '.')
                 ELSE 
                     :F
             END, 
