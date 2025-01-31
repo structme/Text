@@ -1,1 +1,22 @@
 
+LOAD DATA
+CHARACTERSET WE8ISO8859P9
+INFILE *
+APPEND
+INTO TABLE abc.test
+FIELDS TERMINATED BY ";" TRAILING NULLCOLS
+(A "REPLACE(:A, '\"', '')",  -- A sütunundaki tırnakları kaldır
+ B,
+ C,
+ D,
+ E,
+ F "TO_NUMBER(REPLACE(REPLACE(:F, '\"', ''), ',', ''), '9999999.99') * 
+    TO_NUMBER('1,05', '9999D99', 'NLS_NUMERIC_CHARACTERS='',.''')"  -- F sütunundaki tırnakları ve binlik ayırıcıyı kaldır, 1,05 ile çarp
+)
+SKIP 3
+BEGINDATA
+header1;header2;header3;header4;header5;header6
+header7;header8;header9;header10;header11;header12
+header13;header14;header15;header16;header17;header18
+"1,192.45";val2;val3;val4;val5;"100"
+"10,000.50";val7;val8;val9;val10;"200"
