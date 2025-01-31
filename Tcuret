@@ -9,7 +9,8 @@ FIELDS TERMINATED BY ";" TRAILING NULLCOLS
  C,
  D,
  E,
- F "TO_NUMBER(REPLACE(REPLACE(:F, '\"', ''), '.', ''), '999G999D99', 'NLS_NUMERIC_CHARACTERS='',.''') * 1.05"
+ F "TO_CHAR(TO_NUMBER(REPLACE(REPLACE(:F, '\"', ''), '.', ''), '999G999D99', 'NLS_NUMERIC_CHARACTERS='',.''') * 1.05, 
+    '999G999D99', 'NLS_NUMERIC_CHARACTERS='',.''')"
 )
 SKIP 3
 BEGINDATA
@@ -17,4 +18,4 @@ header1;header2;header3;header4;header5;header6
 header7;header8;header9;header10;header11;header12
 header13;header14;header15;header16;header17;header18
 "1.905,12";val2;val3;val4;val5;"100"
-"2.000,50";
+"2.000,50";val7;val8;val9;val10;"200"
