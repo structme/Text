@@ -1,17 +1,3 @@
-SELECT 
-    CASE 
-        WHEN TO_CHAR(tarih, 'HH24') BETWEEN '09' AND '11' THEN '09-12'
-        WHEN TO_CHAR(tarih, 'HH24') BETWEEN '12' AND '14' THEN '12-15'
-        WHEN TO_CHAR(tarih, 'HH24') BETWEEN '15' AND '17' THEN '15-18'
-        ELSE 'Diğer'
-    END AS saat_araligi,
-    COUNT(*) AS toplam
-FROM tablo_adi
-GROUP BY 
-    CASE 
-        WHEN TO_CHAR(tarih, 'HH24') BETWEEN '09' AND '11' THEN '09-12'
-        WHEN TO_CHAR(tarih, 'HH24') BETWEEN '12' AND '14' THEN '12-15'
-        WHEN TO_CHAR(tarih, 'HH24') BETWEEN '15' AND '17' THEN '15-18'
-        ELSE 'Diğer'
-    END
-ORDER BY saat_araligi;
+keytool -genkeypair -alias my_cert -keyalg RSA -keysize 4096 -sigalg SHA256withRSA \
+  -dname "CN=Merkezi Kayıt Kuruluşu A.Ş., O=MKK, C=TR, ST=İstanbul, L=Sarıyer" \
+  -validity 730 -keystore mykeystore.jks -storepass changeit
