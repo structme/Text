@@ -1,3 +1,17 @@
-keytool -genkeypair -alias my_cert -keyalg RSA -keysize 4096 -sigalg SHA256withRSA \
-  -dname "CN=Merkezi Kayıt Kuruluşu A.Ş., O=MKK, C=TR, ST=İstanbul, L=Sarıyer" \
-  -validity 730 -keystore mykeystore.jks -storepass changeit
+SELECT * 
+FROM tablo_adi 
+ORDER BY TO_DATE(YIL || '-' || 
+    CASE AY 
+        WHEN 'Ocak' THEN '01' 
+        WHEN 'Şubat' THEN '02' 
+        WHEN 'Mart' THEN '03' 
+        WHEN 'Nisan' THEN '04' 
+        WHEN 'Mayıs' THEN '05' 
+        WHEN 'Haziran' THEN '06' 
+        WHEN 'Temmuz' THEN '07' 
+        WHEN 'Ağustos' THEN '08' 
+        WHEN 'Eylül' THEN '09' 
+        WHEN 'Ekim' THEN '10' 
+        WHEN 'Kasım' THEN '11' 
+        WHEN 'Aralık' THEN '12' 
+    END, 'YYYY-MM');
