@@ -1,17 +1,19 @@
-SELECT * 
-FROM tablo_adi 
-ORDER BY TO_DATE(YIL || '-' || 
-    CASE AY 
-        WHEN 'Ocak' THEN '01' 
-        WHEN 'Şubat' THEN '02' 
-        WHEN 'Mart' THEN '03' 
-        WHEN 'Nisan' THEN '04' 
-        WHEN 'Mayıs' THEN '05' 
-        WHEN 'Haziran' THEN '06' 
-        WHEN 'Temmuz' THEN '07' 
-        WHEN 'Ağustos' THEN '08' 
-        WHEN 'Eylül' THEN '09' 
-        WHEN 'Ekim' THEN '10' 
-        WHEN 'Kasım' THEN '11' 
-        WHEN 'Aralık' THEN '12' 
-    END, 'YYYY-MM');
+DECLARE
+    CURSOR c_sehir IS
+        SELECT sehir FROM dünya.kita WHERE plaka IN (23, 45, 64);
+    v_sehir CLOB := '';
+    v_temp VARCHAR2(1000);
+BEGIN
+    FOR r IN c_sehir LOOP
+        v_temp := r.sehir || ', ';
+        v_sehir := v_sehir || v_temp;
+    END LOOP;
+
+    -- Sondaki virgülü kaldır
+    IF LENGTH(v_sehir) > 0 THEN
+        v_sehir := SUBSTR(v_sehir, 1, LENGTH(v_sehir) - 2);
+    END IF;
+
+    DBMS_OUTPUT.PUT_LINE('Sonuç: ' || DBMS_LOB.SUBSTR(v_sehir, 4000, 1));
+END;
+/
