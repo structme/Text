@@ -1,19 +1,30 @@
-DECLARE
-    CURSOR c_sehir IS
-        SELECT sehir FROM dünya.kita WHERE plaka IN (23, 45, 64);
-    v_sehir CLOB := '';
-    v_temp VARCHAR2(1000);
-BEGIN
-    FOR r IN c_sehir LOOP
-        v_temp := r.sehir || ', ';
-        v_sehir := v_sehir || v_temp;
-    END LOOP;
+Evet, aynı veritabanında farklı ortamlarda (teta ve zeta gibi) aynı prosedür için SQL ID'ler farklı olabilir. SQL ID'ler aşağıdaki faktörlerden dolayı değişebilir:
 
-    -- Sondaki virgülü kaldır
-    IF LENGTH(v_sehir) > 0 THEN
-        v_sehir := SUBSTR(v_sehir, 1, LENGTH(v_sehir) - 2);
-    END IF;
+1. SQL ID'ler, SQL metni için üretilen hash değerleridir ve ortamlar arasında farklılık gösterebilir
+2. Ortamlar arasında prosedür içeriğinde küçük farklılıklar olması (boşluk, satır sonu, yorum vb.)
+3. Veritabanı sürüm farklılıkları
+4. Oracle'ın iç algoritmasındaki değişiklikler
+5. Prosedürün farklı parametrelerle çağrılması
 
-    DBMS_OUTPUT.PUT_LINE('Sonuç: ' || DBMS_LOB.SUBSTR(v_sehir, 4000, 1));
-END;
-/
+Eğer amacınız aynı prosedürü farklı ortamlarda izlemek ise, SQL ID yerine prosedür ismini bulmaya ve bu isimle takip etmeye odaklanabilirsiniz.
+
+Bir SQL ID'den yola çıkarak ilgili prosedürü bulmak için şu sorguyu kullanabilirsiniz:
+
+```sql
+SELECT s.sql_id, s.sql_text, 
+       p.owner, p.object_name, p.procedure_name
+FROM v$sql s
+JOIN all_procedures p ON INSTR(UPPER(s.sql_text), UPPER(p.procedure_name)) > 0
+WHERE s.sql_id = 'your_sql_id_here';
+```
+
+Ayrıca, prosedür ismine göre çalıştırılan SQL ifadelerini bulmak için:
+
+```sql
+SELECT sql_id, sql_text
+FROM v$sql
+WHERE UPPER(sql_text) LIKE '%YOUR_PROCEDURE_NAME%'
+AND sql_text LIKE '%EXEC%' OR sql_text LIKE '%CALL%' OR sql_text LIKE '%BEGIN%';
+```
+
+Bu şekilde ortamlar arasında karşılaştırmalı analiz yapabilirsiniz.
